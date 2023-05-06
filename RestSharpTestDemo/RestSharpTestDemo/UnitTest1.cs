@@ -1,6 +1,8 @@
+using System.Net;
 using FluentAssertions;
 using GraphQLProductApp.Data;
 using RestSharp;
+using RestSharp.Authenticators;
 using Xunit.Abstractions;
 
 namespace RestSharpTestDemo;
@@ -109,4 +111,30 @@ public class UnitTest1
         response?.Name.Should().BeEquivalentTo(productName);
         response?.Price.Should().Be(price);
     }
+    
+    [Fact]
+    public async Task FileUpload()
+    {
+        // Remove the ssl certification error in this case
+        var restClientOptions = new RestClientOptions()
+        {
+            BaseUrl = new Uri("https://localhost:5001"),
+            RemoteCertificateValidationCallback = (_, _, _, _) => true,
+            Authenticator = new JwtAuthenticator("bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODMzMjc3MjksImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzcxIiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzNzEifQ.Vyehn0w5XdzbrvmlcAKEnn14x1vVipzrwjR3IJTeWYM")
+        }; 
+        // Rest Client initialization
+        var client = new RestClient(restClientOptions);
+        // Rest Request: Class to perform the actual request
+        var request = new RestRequest("Product", Method.Post);
+        request.AddFile("myFile", @"/Users/camilo.posadaa/Pictures/test.png", "multipart/form-data");
+            
+        // Perform GET Operation
+        var response = await client.ExecuteAsync<Product>(request);
+        // Assert
+        _output.WriteLine("Doing assertions");
+        // Verify http status code created
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
+    }
+
+    
 }

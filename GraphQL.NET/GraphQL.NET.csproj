@@ -14,4 +14,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
         <PackageReference Include="GraphQL.Server.Transports.AspNetCore.SystemTextJson" Version="5.0.2" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="files\" />
+    </ItemGroup>
 </Project>
